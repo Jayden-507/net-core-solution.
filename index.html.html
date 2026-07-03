@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Core Solution - Enterprise Dashboard</title>
+    <style>
+        :root {
+            --bg-dark: #0a0f1d;
+            --panel-bg: rgba(16, 24, 48, 0.85);
+            --ceo-color: #ff4757;
+            --cto-color: #2ed573;
+            --coo-color: #ffa502;
+            --text-light: #f1f2f6;
+            --console-bg: #050811;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(10, 15, 29, 0.9), rgba(10, 15, 29, 0.9)), 
+                        url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1920') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-light);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            color: #00d2d3;
+            text-shadow: 0 0 10px rgba(0, 210, 211, 0.5);
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-style: italic;
+            color: #a4b0be;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 15px 35px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-ceo { background: rgba(255, 71, 87, 0.2); color: var(--ceo-color); border-color: var(--ceo-color); }
+        .btn-ceo:hover, .btn-ceo.active { background: var(--ceo-color); color: white; box-shadow: 0 0 15px var(--ceo-color); }
+
+        .btn-cto { background: rgba(46, 213, 115, 0.2); color: var(--cto-color); border-color: var(--cto-color); }
+        .btn-cto:hover, .btn-cto.active { background: var(--cto-color); color: white; box-shadow: 0 0 15px var(--cto-color); }
+
+        .btn-coo { background: rgba(255, 165, 2, 0.2); color: var(--coo-color); border-color: var(--coo-color); }
+        .btn-coo:hover, .btn-coo.active { background: var(--coo-color); color: #111; box-shadow: 0 0 15px var(--coo-color); }
+
+        .panel-content {
+            display: none;
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 950px;
+            margin: 0 auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-content h2 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .func-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .func-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .func-card h4 { margin: 0 0 10px 0; color: #ced6e0; }
+
+        .action-btn {
+            width: 100%;
+            padding: 10px;
+            background: #2f3542;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover { background: #57606f; }
+
+        .console-container {
+            position: relative;
+            background: var(--console-bg);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 20px;
+        }
+
+        .console-header {
+            background: #1c2434;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            color: #747d8c;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        pre {
+            margin: 0;
+            padding: 20px;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            min-height: 120px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>NET CORE SOLUTION</h1>
+    <p>"Conectando el presente, construyendo el futuro."</p>
+</header>
+
+<div class="nav-container">
+    <button class="nav-btn btn-ceo" id="nav-ceo" onclick="switchTab('ceo')">VLAN 3: DIRECCION GENERAL Y CONTROL DEL SISTEMA (CEO)</button>
+    <button class="nav-btn btn-cto" id="nav-cto" onclick="switchTab('cto')">VLAN 2: MONITOREO BASE DE DATOS Y RED (COO)</button>
+    <button class="nav-btn btn-coo" id="nav-coo" onclick="switchTab('coo')">VLAN 1: ALMACENAMIENTO Y FLUJO DE SERVIDORES (CTO)</button>
+</div>
+
+<!-- ================= SECCIÓN CEO (VLAN 3) ================= -->
+<div id="ceo" class="panel-content">
+    <h2 style="color: var(--ceo-color);">📊 Centro de Mando Administrativo e Integral</h2>
+    <p>Área responsable del monitoreo total de enlaces, auditoría inter-VLAN y gestión corporativa.</p>
+    
+    <div class="functions-grid">
+        <div class="func-card">
+            <h4>Conectividad Corporativa</h4>
+            <button class="action-btn" onclick="runSim('ceo', 'pingGlobal')">Ping Completo</button>
+        </div>
+        <div class="func-card">
+            <h4>Telefonía IP / Móvil</h4>
+            <button class="action-btn" onclick="runSim('ceo', 'voiceVlan')">Auditar Canales Voz</button>
+        </div>
+        <div class="func-card">
+            <h4>Tolerancia a Fallos</h4>
+            <button class="action-btn" onclick="runSim('ceo', 'redundancy')">Simular Falla Enlace</button>
+        </div>
+        <div class="func-card">
+            <h4>Políticas de Acceso</h4>
+            <button class="action-btn" onclick="runSim('ceo', 'security')">Verificar Bloqueos</button>
+        </div>
+    </div>
+
+    <div class="console-container">
+        <div class="console-header"><span>Terminal de Monitoreo Global - CEO</span><span>NOC_VIEW_ACTIVE</span></div>
+        <pre id="log-ceo">Sistema listo para auditoría. Seleccione una función ejecutiva superior...</pre>
+    </div>
+</div>
+
+<!-- ================= SECCIÓN CTO (VLAN 1) ================= -->
+<div id="cto" class="panel-content">
+    <h2 style="color: var(--cto-color);">⚙️ Dirección de Infraestructura de Datos</h2>
+    <p>Área técnica encargada de los servidores principales, enrutamiento perimetral y estabilidad troncal.</p>
+    
+    <div class="functions-grid">
+        <div class="func-card">
+            <h4>Base de Datos de Red</h4>
+            <button class="action-btn" onclick="runSim('cto', 'showTrunk')">Show Interfaces Trunk</button>
+        </div>
+        <div class="func-card">
+            <h4>Estado del Servidor Central</h4>
+            <button class="action-btn" onclick="runSim('cto', 'serverStatus')">Diagnóstico Servidores</button>
+        </div>
+        <div class="func-card">
+            <h4>Puente de Interconexión</h4>
+            <button class="action-btn" onclick="runSim('cto', 'bridgeTest')">Validar Enlace S2-S3 (Fa0/23)</button>
+        </div>
+        <div class="func-card">
+            <h4>Servidor de Nube R1</h4>
+            <button class="action-btn" onclick="runSim('cto', 'cloudRoute')">Ruta Subred Gig0/2</button>
+        </div>
+    </div>
+
+    <div class="console-container">
+        <div class="console-header"><span>Consola de Consolidación Core - Cisco Switch CLI</span><span>PRIVILEGED_EXEC_MODE</span></div>
+        <pre id="log-cto">NetCore_Core_Switch#_ (Esperando comando de ingeniería...)</pre>
+    </div>
+</div>
+
+<!-- ================= SECCIÓN COO (VLAN 2) ================= -->
+<div id="coo" class="panel-content">
+    <h2 style="color: var(--coo-color);">🗄️ Dirección de Operaciones y Flujo de Registro</h2>
+    <p>Área operativa encargada de las estaciones de trabajo locales, sincronización de registros y Access Points inalámbricos.</p>
+    
+    <div class="functions-grid">
+        <div class="func-card">
+            <h4>Estaciones fijas</h4>
+            <button class="action-btn" onclick="runSim('coo', 'pcStatus')">Verificar Host Registro</button>
+        </div>
+        <div class="func-card">
+            <h4>Cobertura Inalámbrica</h4>
+            <button class="action-btn" onclick="runSim('coo', 'wirelessAp')">Auditar Access Points</button>
+        </div>
+        <div class="func-card">
+            <h4>Cola de Transacciones</h4>
+            <button class="action-btn" onclick="runSim('coo', 'dbSync')">Sincronizar SQL Local</button>
+        </div>
+        <div class="func-card">
+            <h4>Terminales Especiales</h4>
+            <button class="action-btn" onclick="runSim('coo', 'superLaptop')">Estatus Laptop SUPER</button>
+        </div>
+    </div>
+
+    <div class="console-container">
+        <div class="console-header"><span>Gestión de Terminales Operativas - COO Monitor</span><span>VLAN2_USER_SEGMENT</span></div>
+        <pre id="log-coo">Operaciones listas. Esperando peticiones de sincronización y estado de terminales...</pre>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId) {
+        document.querySelectorAll('.panel-content').forEach(panel => panel.style.display = 'none');
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabId).style.display = 'block';
+        document.getElementById('nav-' + tabId).classList.add('active');
+    }
+
+    function runSim(section, functionType) {
+        const logElement = document.getElementById('log-' + section);
+        logElement.innerText = "Cargando respuesta del sistema simulado...\n";
+        
+        setTimeout(() => {
+            let res = "";
+            
+            // Lógica CEO
+            if (functionType === 'pingGlobal') {
+                res = "CEO_NOC# ping 192.168.1.1 (SERVER CENTRAL)\nSending 5, 100-byte ICMP Echos, timeout is 2 seconds:\n!!!!!\nSuccess rate is 100 percent (5/5), round-trip min/avg/max = 1/2/4 ms\n\nCEO_NOC# ping 192.168.2.10 (PC REGISTRO)\n!!!!!\nSuccess rate is 100 percent. RED TOTALMENTE CONVERGENTE.";
+            } else if (functionType === 'voiceVlan') {
+                res = "Analizando Calidad de Servicio (QoS)...\n[OK] Voice VLAN 1 activa.\n[OK] Adaptador de energía detectado en IP Phones.\n[OK] Tráfico de Voz prioridad CoS 5 garantizado a través de enlaces jerárquicos.";
+            } else if (functionType === 'redundancy') {
+                res = "[ALERTA] Enlace ML1 a Switch Acceso desconectado artificialmente.\n[PROCESANDO] Protocolo STP recalculando rutas alternativas...\n[ÉXITO] Tráfico desviado automáticamente a través de ML2 de respaldo.\nTiempo de convergencia: 0.8ms. Alta disponibilidad validada.";
+            } else if (functionType === 'security') {
+                res = "Verificando Access Control Lists (ACLs)...\nPermitido: Tráfico administrativo VLAN 3 -> Servidores VLAN 10.\nPermitido: Consultas a bases de datos origen VLAN 2.\nResultado: Políticas de aislamiento liso y seguro.";
+            }
+            
+            // Lógica CTO
+            else if (functionType === 'showTrunk') {
+                res = "NetCore_Core_Switch# show interfaces trunk\n\nPort        Mode         Encapsulation  Status        Native vlan\nFa0/23      on           802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nFa0/23      1,2,3,10\n\nPort        Vlans allowed and active in management domain\nFa0/23      2,3,10";
+            } else if (functionType === 'serverStatus') {
+                res = "Monitoreo del Rack de Servidores Integrados (VLAN 10):\n- Server-PT SERVER/BD: [ONLINE] - Escuchando puerto 3306\n- Server-PT RESPALDO: [ONLINE] - Sincronizado\n- Server-PT GESTION: [ONLINE]\n- Server-PT CONTROL: [ONLINE]";
+            } else if (functionType === 'bridgeTest') {
+                res = "NetCore_S2# ping 192.168.1.103 via interconection port Fa0/23\nType escape sequence to abort.\nSending 5, 100-byte ICMP Echos:\n!!!!!\nÉxito: Tráfico local de Servidores no sube al Router Central. Puente S2-S3 optimizado al 100%.";
+            } else if (functionType === 'cloudRoute') {
+                res = "NetCore_Router_Central# show ip route connected\nC    192.168.1.0/24 is directly connected, GigabitEthernet0/1.10\nC    192.168.4.0/24 is directly connected, GigabitEthernet0/2 (Servidor en la nube R1)";
+            }
+            
+            // Lógica COO
+            else if (functionType === 'pcStatus') {
+                res = "VLAN2_MONITOR> ping PC-PT REGISTRO 1\nReply from 192.168.2.11: bytes=32 time=1ms TTL=128\n\nVLAN2_MONITOR> ping PC-PT REGISTRO 2\nReply from 192.168.2.12: bytes=32 time=2ms TTL=128\nEstado de terminales fijas: OPERATIVO.";
+            } else if (functionType === 'wirelessAp') {
+                res = "Auditoría de red inalámbrica interna:\nAccessPoint-PT (REGISTRO FAST) -> Canales estables, 0% colisiones.\nDispositivos vinculados:\n- Smartphone-PT COMUNICACION [Conectado]\n- TabletPC-PT Tablet PC2 [Conectado]";
+            } else if (functionType === 'dbSync') {
+                res = "Iniciando envío de registros a la VLAN 10...\nAbriendo socket seguro hacia Server-PT SERVER/BD (192.168.1.X)\nSincronizando tablas... 100% completado.\nConfirmación de escritura recibida de forma segura.";
+            } else if (functionType === 'superLaptop') {
+                res = "Verificando privilegios de Laptop-PT SUPER y SUPER 2:\nDirección IP: 192.168.2.25 y 192.168.2.26\nEnlace ascendente directo hacia Switch S1 operativo.\nTráfico de auditoría local activo.";
+            }
+
+            logElement.innerText = res;
+        }, 600);
+    }
+
+    // Inicializar la vista en la pestaña del CEO
+    switchTab('ceo');
+</script>
+
+</body>
+</html>
